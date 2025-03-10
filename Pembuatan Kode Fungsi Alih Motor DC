@@ -1,0 +1,70 @@
+import sympy as sp
+
+# Penjelasan: 
+# Kita mendefinisikan simbol-simbol yang akan digunakan dalam perhitungan.
+# t = waktu, R = resistansi, L = induktansi, Ke = konstanta tegangan,
+# Kt = konstanta torsi, J = momen inersia, B = koefisien gesekan.
+# V(t) = tegangan input, i(t) = arus, omega(t) = kecepatan sudut.
+t = sp.symbols('t')
+R, L, Ke, Kt, J, B = sp.symbols('R L Ke Kt J B', real=True, positive=True)
+V = sp.Function('V')(t)
+i = sp.Function('i')(t)
+omega = sp.Function('omega')(t)
+
+# Penjelasan:
+# Persamaan listrik motor DC: V = R*i + L*di/dt + Ke*omega
+# Ini menggambarkan hubungan antara tegangan, arus, dan kecepatan sudut.
+elec_eq = sp.Eq(V, R*i + L*sp.diff(i, t) + Ke*omega)
+
+# Penjelasan:
+# Persamaan mekanik motor DC: J*dω/dt + B*ω = Kt*i
+# Ini menggambarkan hubungan antara torsi, kecepatan sudut, dan arus.
+mech_eq = sp.Eq(J*sp.diff(omega, t) + B*omega, Kt*i)
+
+# Menampilkan persamaan matematika motor DC
+print("1. Model Matematika Motor DC:")
+print("Persamaan Listrik:")
+sp.pretty_print(elec_eq)
+print("\nPersamaan Mekanik:")
+sp.pretty_print(mech_eq)
+print("\n")
+
+# Penjelasan:
+# Transformasi Laplace digunakan untuk mengubah persamaan diferensial
+# dari domain waktu ke domain frekuensi (s).
+# s = variabel Laplace, V(s) = tegangan dalam domain Laplace,
+# I(s) = arus dalam domain Laplace, Omega(s) = kecepatan sudut dalam domain Laplace.
+s = sp.symbols('s')
+V_s = sp.Function('V')(s)
+I_s = sp.Function('I')(s)
+Omega_s = sp.Function('Omega')(s)
+
+# Penjelasan:
+# Transformasi Laplace dari persamaan listrik:
+# V(s) = R*I(s) + L*s*I(s) + Ke*Omega(s)
+elec_laplace = sp.Eq(V_s, R*I_s + L*s*I_s + Ke*Omega_s)
+
+# Penjelasan:
+# Transformasi Laplace dari persamaan mekanik:
+# J*s*Omega(s) + B*Omega(s) = Kt*I(s)
+mech_laplace = sp.Eq(J*s*Omega_s + B*Omega_s, Kt*I_s)
+
+# Menampilkan persamaan dalam domain Laplace
+print("2. Transformasi Laplace pada Motor DC:")
+print("Persamaan Listrik dalam Domain Laplace:")
+sp.pretty_print(elec_laplace)
+print("\nPersamaan Mekanik dalam Domain Laplace:")
+sp.pretty_print(mech_laplace)
+print("\n")
+
+# Penjelasan:
+# Fungsi alih (transfer function) adalah rasio antara output (kecepatan sudut Omega(s))
+# dan input (tegangan V(s)). Kita menyelesaikan persamaan Laplace untuk
+# mendapatkan hubungan Omega(s)/V(s).
+sol = sp.solve([elec_laplace, mech_laplace], (I_s, Omega_s))
+transfer_function = sol[Omega_s] / V_s
+transfer_function_simplified = sp.simplify(transfer_function)
+
+# Menampilkan fungsi alih
+print("3. Fungsi Alih Omega(s)/V(s):")
+sp.pretty_print(transfer_function_simplified)
