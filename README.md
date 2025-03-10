@@ -1,3 +1,7 @@
+# NAMA : Barru Wira Yasa
+# NIM  : 235150301111021
+
+
 # Pembuatan Kode Fungsi Alih Motor DC
 
 Repositori ini berisi kode Python untuk melakukan perhitungan simbolik terkait Motor DC, mencakup:
